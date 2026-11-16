@@ -24,7 +24,7 @@ warnings.filterwarnings('ignore')
 # ============================================================
 
 # Load from GitHub (replace URL with your repo's raw file URL)
-DATA_URL = "https://raw.githubusercontent.com/YOUR_USERNAME/project-integrate/main/data/dat_all_PS.csv"
+DATA_URL = "https://raw.githubusercontent.com/drknortheim/Python_for_Addiction_Researchers/main/data/dat_all_PS.csv"
 
 df = pd.read_csv(DATA_URL)
 
