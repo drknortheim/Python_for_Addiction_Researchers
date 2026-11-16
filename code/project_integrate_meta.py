@@ -23,13 +23,31 @@ warnings.filterwarnings('ignore')
 # SECTION 1 — Load the data
 # ============================================================
 
-# Load from GitHub (replace URL with your repo's raw file URL)
 DATA_URL = "https://raw.githubusercontent.com/drknortheim/Python_for_Addiction_Researchers/main/data/dat_all_PS.csv"
 
-df = pd.read_csv(DATA_URL)
+# Smart loader — works in both JupyterLite and regular Python
+import sys, io
 
-# -- OR load locally if running on your own machine ----------
-# df = pd.read_csv('dat_all_PS.csv')
+async def load_data_jupyterlite(url):
+    from pyodide.http import pyfetch
+    response = await pyfetch(url)
+    content = await response.string()
+    return pd.read_csv(io.StringIO(content))
+
+def load_data_standard(url):
+    return pd.read_csv(url)
+
+# Detect environment and load accordingly
+if "pyodide" in sys.modules or hasattr(__builtins__, '__IPYTHON__'):
+    # Running in JupyterLite — use pyodide fetcher
+    # NOTE: In JupyterLite, run this line in its own cell:
+    #   df = await load_data_jupyterlite(DATA_URL)
+    print("JupyterLite detected.")
+    print("Run this in the next cell:")
+    print("  df = await load_data_jupyterlite(DATA_URL)")
+else:
+    # Running in standard Python / Jupyter Notebook
+    df = load_data_standard(DATA_URL)
 
 print("Dataset loaded successfully")
 print(f"Shape: {df.shape}")          # (rows, columns)
